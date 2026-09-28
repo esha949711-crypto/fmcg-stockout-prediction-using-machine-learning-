@@ -1,5 +1,30 @@
 # Predicting FMCG Stockout Risk Using Machine Learning
 
+## Run the app and live analytics
+
+From the repository folder:
+
+```sh
+python -m pip install -r requirements.txt
+python app.py
+```
+
+Open http://127.0.0.1:5000/analytics.
+
+- **Inventory dataset:** recalculates summaries and charts from the CSV on every request. Data is read from the first available path: `data/inventory_data.csv`, `data/processed/processed_inventory_data.csv`, or the checked-in `processed_inventory_data.csv`. Replace that file and click **Refresh analytics** to see updated results.
+- **Saved predictions:** reads `outputs/predictions.csv`. Submit predictions on the Predict page, then refresh this view. Predicted risk bands and probabilities are estimates; they are not counted as actual stockout labels.
+- **Analyse CSV:** upload a UTF-8 CSV up to 16 MB. The upload is used only for that response and does not overwrite data or retrain the model. It requires `current_stock`; other processed dataset columns are optional. Raw Kaggle headers must be converted to the processed schema first.
+
+The dashboard uses calculated HTML bar charts with exact values, not the repository's saved PNGs. Missing, empty, or invalid data produces a visible error instead of old charts. Recognized numeric columns must have finite, non-negative values; stockout/promotion labels must be 0 or 1, and probabilities must be between 0 and 1. Missing stockout labels are treated as unavailable, not zero.
+
+The app supports both this repository's flat files and conventional `templates/`, `static/`, `models/`, and `outputs/results/` locations. If a separate `templates/analytics.html` exists in your local copy, update it with this repository's `analytics.html` too.
+
+Run the regression checks with:
+
+```sh
+python -m unittest test_analytics -v
+```
+
 ## Introduction
 
 In retail and FMCG businesses, maintaining the right inventory level is an important challenge. If inventory becomes too low, customers may find products unavailable. If inventory is too high, businesses may face unnecessary holding costs and excess stock.
